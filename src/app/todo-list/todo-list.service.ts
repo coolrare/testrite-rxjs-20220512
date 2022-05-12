@@ -26,6 +26,16 @@ export class TodoListService {
   getSuggestList(keyword: string, fetchCount = 10): Observable<string[]> {
     const result = [];
 
+    // reactive programming 風格寫法
+    const byKeyword = (item: TodoItem) => item.text.toLowerCase().indexOf(keyword.toLowerCase()) !== -1;
+    const toText = (item: TodoItem) => item.text;
+
+    const result2 = this.dataSource
+      // .filter(item => byKeyword(item))
+      .filter(byKeyword)
+      .map(toText)
+      .slice(0, fetchCount);
+
     // TODO: 將這裡命令式風格的寫法，改成宣告式的寫法
     for (let i = 0; i < this.dataSource.length; ++i) {
       const item = this.dataSource[i];
@@ -39,7 +49,7 @@ export class TodoListService {
       }
     }
 
-    return of(result).pipe(
+    return of(result2).pipe(
       tap(() => console.log('搜尋建議關鍵字', keyword)),
       delay(REQUEST_DELAY),
       tap(() => console.log('搜尋完成'))
