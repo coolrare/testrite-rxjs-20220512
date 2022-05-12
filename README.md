@@ -8,3 +8,7 @@
 ## 推薦套件
 
 - [Code Metrics](https://marketplace.visualstudio.com/items?itemName=kisstkondoros.vscode-codemetrics)
+
+## 程式範例
+
+- [課堂上提到的範例程式專案](https://github.com/coolrare/angular-advanced-rxjs-full)
