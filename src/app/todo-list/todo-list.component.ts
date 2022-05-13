@@ -5,7 +5,8 @@ import { Store } from '@ngrx/store';
 import { map } from 'rxjs/operators';
 import { PageChangeEvent } from './page-change-event';
 import { SortChangeEvent } from './sort-change-event';
-import { selectTodoListState } from './state/todo-list.selectors';
+import { loadTodoLists, setTodoItems } from './state/todo-list.actions';
+import { selectTodoCount, selectTodoItems, selectTodoListState } from './state/todo-list.selectors';
 import { TodoItem } from './todo-item';
 import { TodoItemStatusChangeEvent } from './todo-item-status-change-event';
 import { TodoListAddDialogComponent } from './todo-list-add-dialog/todo-list-add-dialog.component';
@@ -34,6 +35,9 @@ export class TodoListComponent implements OnInit {
 
   loading = false;
 
+  totalCount$ = this.store.select(selectTodoCount);
+  todoList$ = this.store.select(selectTodoItems);
+
   constructor(
     private todoListService: TodoListService,
     private dialog: MatDialog,
@@ -46,7 +50,10 @@ export class TodoListComponent implements OnInit {
       .select(selectTodoListState)
       .subscribe(data => {
         console.log(data);
-      })
+      });
+
+    this.store.dispatch(loadTodoLists());
+
 
     this.refreshTodoList();
   }
@@ -58,23 +65,35 @@ export class TodoListComponent implements OnInit {
   }
 
   refreshTodoList() {
-    this.loading = true;
-    this.todoListService
-      .getTodoList(
-        this.keyword,
-        this.pagination,
-        this.sort
-      )
-      .subscribe({
-        next: (result) => {
-          this.totalCount = result.totalCount;
-          this.todoList = result.data;
-          this.loading = false;
-        },
-        error: (error: HttpErrorResponse) => {
-          alert(error.error.message);
-        },
-      });
+    this.todoListService.getTodoList(
+      this.keyword,
+      this.pagination,
+      this.sort
+    ).subscribe(data => {
+      this.store.dispatch(setTodoItems({
+        totalCount: data.totalCount,
+        items: data.data
+      }));
+    })
+
+    //
+    // this.loading = true;
+    // this.todoListService
+    //   .getTodoList(
+    //     this.keyword,
+    //     this.pagination,
+    //     this.sort
+    //   )
+    //   .subscribe({
+    //     next: (result) => {
+    //       this.totalCount = result.totalCount;
+    //       this.todoList = result.data;
+    //       this.loading = false;
+    //     },
+    //     error: (error: HttpErrorResponse) => {
+    //       alert(error.error.message);
+    //     },
+    //   });
   }
 
   sortChange(event: SortChangeEvent) {
