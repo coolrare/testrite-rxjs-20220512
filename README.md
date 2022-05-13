@@ -14,3 +14,15 @@
 
 - [課堂上提到的範例程式專案](https://github.com/coolrare/angular-advanced-rxjs-full)
 - [RxJS 單元測試範例](https://github.com/coolrare/angular-advanced-rxjs-testing)
+
+## NgRx 練習
+
+### 練習1
+
+- 安裝 `@ngrx/store, @ngrx/schematics, @ngrx/effects`
+- 建立一個 feature: `ng add feature todos-list/state/todo-list`
+- 確認 app.module.ts 下，有註冊 `StoreModule.forRoot(), EffectsModule.forRoot()`
+- 確認 todo-list.module.ts 下，有註冊 `StoreModule.forFeature(todoListFeatureKey, reducer), EffectsModule.forFeature([TodoListEffects])`
+- 在 todo-list.reducer.ts 內，設定 `State` 型別，並指定 `initialState`
+- 在 todo-list.component.ts 內，注入 `Store`，並取得狀態資訊：`this.store.subscribe(console.log)`
+- 使用預設建立好的 `selectTodoListState` Selector，取得指定 Feature 的內容：`this.store.select(selectTodoListState).subscribe(console.log)`
