@@ -4,6 +4,7 @@
 
 - [回家練習-說明](homework.md)
 - [回家練習-參考解答](https://stackblitz.com/edit/textwrite-rxjs-homework-ans)
+- [上課時的實作範例](https://stackblitz.com/edit/testrite-rxjs-homework)
 
 ## 推薦套件
 
