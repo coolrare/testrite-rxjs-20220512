@@ -13,11 +13,15 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
+import { StoreModule } from '@ngrx/store';
+import { reducer, todoListFeatureKey } from './state/todo-list.reducer';
 import { TodoListRoutingModule } from './todo-list-routing.module';
 import { TodoListTableComponent } from './todo-list-table/todo-list-table.component';
 import { TodoListComponent } from './todo-list.component';
 import { TodoListSearchComponent } from './todo-list-search/todo-list-search.component';
 import { TodoListAddDialogComponent } from './todo-list-add-dialog/todo-list-add-dialog.component';
+import { EffectsModule } from '@ngrx/effects';
+import { TodoListEffects } from './state/todo-list.effects';
 
 @NgModule({
   declarations: [TodoListComponent, TodoListTableComponent, TodoListSearchComponent, TodoListAddDialogComponent],
@@ -36,7 +40,9 @@ import { TodoListAddDialogComponent } from './todo-list-add-dialog/todo-list-add
     MatSortModule,
     MatPaginatorModule,
     MatDialogModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    StoreModule.forFeature(todoListFeatureKey, reducer),
+    EffectsModule.forFeature([TodoListEffects])
   ],
 })
 export class TodoListModule {}

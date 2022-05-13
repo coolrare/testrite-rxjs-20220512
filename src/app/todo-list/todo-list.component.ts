@@ -1,8 +1,11 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { Store } from '@ngrx/store';
+import { map } from 'rxjs/operators';
 import { PageChangeEvent } from './page-change-event';
 import { SortChangeEvent } from './sort-change-event';
+import { selectTodoListState } from './state/todo-list.selectors';
 import { TodoItem } from './todo-item';
 import { TodoItemStatusChangeEvent } from './todo-item-status-change-event';
 import { TodoListAddDialogComponent } from './todo-list-add-dialog/todo-list-add-dialog.component';
@@ -33,10 +36,18 @@ export class TodoListComponent implements OnInit {
 
   constructor(
     private todoListService: TodoListService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private store: Store
   ) {}
 
   ngOnInit(): void {
+
+    this.store
+      .select(selectTodoListState)
+      .subscribe(data => {
+        console.log(data);
+      })
+
     this.refreshTodoList();
   }
 

@@ -34,11 +34,11 @@ export class AppComponent {
   destroy$ = new Subject();
 
   ngOnInit() {
-    this.timer$
-      .pipe(
-        // takeUntil(this.destroy$)
-        autoUnSubscribeWhen(this.destroy$)
-      )
-      .subscribe(console.log);
+    // this.timer$
+    //   .pipe(
+    //     // takeUntil(this.destroy$)
+    //     autoUnSubscribeWhen(this.destroy$)
+    //   )
+    //   .subscribe(console.log);
   }
 }
