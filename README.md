@@ -74,3 +74,43 @@
   totalCount$ = this.store.select(selectTodoCount);
   todoList$ = this.store.select(selectTodoItems);
   ```
+
+### 練習 3
+
+- 建立一個給 Effect 使用的 Action
+
+  ```typescript
+  export const queryTodoList = createAction(
+  '[TodoList] Query TodoList',
+  props<{ keyword: string, pagination: PageChangeEvent, sort: SortChangeEvent}>()
+  );
+  ```
+
+- 在 Effect 裡面建立處理 Action 的程式
+
+  ```typescript
+  queryTodoList$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(TodoListActions.queryTodoList),
+      concatMap(action => {
+        return this
+          .todoListService
+          .getTodoList(action.keyword, action.pagination, action.sort)
+          .pipe(
+            map(data => TodoListActions.setTodoItems({ totalCount: data.totalCount, items: data.data })),
+            catchError(error => {
+              console.error(error);
+              return of(TodoListActions.setTodoItems({ totalCount: 0, items: [] }))
+            })
+          )
+      }))
+  });
+  ```
+
+- todo-list.component.ts 派送 Action
+  - `this.store.dispatch(queryTodoList({ keyword: this.keyword, pagination: this.pagination, sort: this.sort }));`
+
+- 進階練習：將 todo-list.component.ts 內的屬性都移動到 Store 內的狀態
+  - 變更狀態統一透過 Action -> Reducer
+  - 取的狀態統一透過 Selector
+  - todo-list.component.ts 下得子元件，也可以改成從 Store 存取資料，不再透過 @Input / @Output

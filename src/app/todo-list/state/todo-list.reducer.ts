@@ -5,11 +5,13 @@ import * as TodoListActions from './todo-list.actions';
 export const todoListFeatureKey = 'todoList';
 
 export interface State {
+  loading: boolean;
   totalCount: number;
   todoList: TodoItem[];
 }
 
 export const initialState: State = {
+  loading: false,
   totalCount: 1000,
   todoList: []
 };
@@ -42,6 +44,15 @@ export const reducer = createReducer(
     ...state,
     totalCount: action.totalCount,
     todoList: action.items
-  }))
+  })),
+
+  on(TodoListActions.todoListLoading, (state, action) => ({
+    ...state,
+    loading: true
+  })),
+  on(TodoListActions.todoListLoaded, (state, action) => ({
+    ...state,
+    loading: false
+  })),
 
 );

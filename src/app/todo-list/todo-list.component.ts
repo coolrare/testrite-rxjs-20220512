@@ -2,11 +2,16 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { PageChangeEvent } from './page-change-event';
 import { SortChangeEvent } from './sort-change-event';
-import { loadTodoLists, setTodoItems } from './state/todo-list.actions';
-import { selectTodoCount, selectTodoItems, selectTodoListState } from './state/todo-list.selectors';
+import { loadTodoLists, queryTodoList, setTodoItems, todoListLoaded, todoListLoading } from './state/todo-list.actions';
+import {
+  selectTodoCount,
+  selectTodoItems,
+  selectTodoListLoading,
+  selectTodoListState
+} from './state/todo-list.selectors';
 import { TodoItem } from './todo-item';
 import { TodoItemStatusChangeEvent } from './todo-item-status-change-event';
 import { TodoListAddDialogComponent } from './todo-list-add-dialog/todo-list-add-dialog.component';
@@ -15,7 +20,7 @@ import { TodoListService } from './todo-list.service';
 @Component({
   selector: 'app-todo-list',
   templateUrl: './todo-list.component.html',
-  styleUrls: ['./todo-list.component.css'],
+  styleUrls: ['./todo-list.component.css']
 })
 export class TodoListComponent implements OnInit {
   suggestList: string[] = [];
@@ -36,13 +41,15 @@ export class TodoListComponent implements OnInit {
   loading = false;
 
   totalCount$ = this.store.select(selectTodoCount);
-  todoList$ = this.store.select(selectTodoItems);
+  todoList$ = this.store.select(selectTodoItems).pipe(tap(() => this.store.dispatch(todoListLoaded())));
+  loading$ = this.store.select(selectTodoListLoading)
 
   constructor(
     private todoListService: TodoListService,
     private dialog: MatDialog,
     private store: Store
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
 
@@ -52,8 +59,7 @@ export class TodoListComponent implements OnInit {
         console.log(data);
       });
 
-    this.store.dispatch(loadTodoLists());
-
+    // this.store.dispatch(loadTodoLists());
 
     this.refreshTodoList();
   }
@@ -65,16 +71,20 @@ export class TodoListComponent implements OnInit {
   }
 
   refreshTodoList() {
-    this.todoListService.getTodoList(
-      this.keyword,
-      this.pagination,
-      this.sort
-    ).subscribe(data => {
-      this.store.dispatch(setTodoItems({
-        totalCount: data.totalCount,
-        items: data.data
-      }));
-    })
+    // this.loading = true;
+    this.store.dispatch(todoListLoading());
+    this.store.dispatch(queryTodoList({ keyword: this.keyword, pagination: this.pagination, sort: this.sort }));
+
+    // this.todoListService.getTodoList(
+    //   this.keyword,
+    //   this.pagination,
+    //   this.sort
+    // ).subscribe(data => {
+    //   this.store.dispatch(setTodoItems({
+    //     totalCount: data.totalCount,
+    //     items: data.data
+    //   }));
+    // })
 
     //
     // this.loading = true;
@@ -108,7 +118,7 @@ export class TodoListComponent implements OnInit {
   pageChange(event: PageChangeEvent) {
     this.pagination = {
       pageNumber: event.pageNumber + 1,
-      pageSize : event.pageSize
+      pageSize: event.pageSize
     };
     this.refreshTodoList();
   }

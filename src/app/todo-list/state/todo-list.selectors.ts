@@ -15,3 +15,7 @@ export const selectTodoCount = createSelector(
   (todoState) => todoState.totalCount
 );
 
+export const selectTodoListLoading = createSelector(
+  selectTodoListState,
+  (todoState) => todoState.loading
+)
