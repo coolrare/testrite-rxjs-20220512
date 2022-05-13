@@ -2,7 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
-import { map, tap } from 'rxjs/operators';
+import { map, skip, tap } from 'rxjs/operators';
 import { PageChangeEvent } from './page-change-event';
 import { SortChangeEvent } from './sort-change-event';
 import { loadTodoLists, queryTodoList, setTodoItems, todoListLoaded, todoListLoading } from './state/todo-list.actions';
@@ -52,7 +52,6 @@ export class TodoListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
     this.store
       .select(selectTodoListState)
       .subscribe(data => {
