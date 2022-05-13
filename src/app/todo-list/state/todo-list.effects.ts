@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, map, concatMap, filter } from 'rxjs/operators';
-import { Observable, EMPTY, of } from 'rxjs';
+import { catchError, map, concatMap, filter, concatAll } from 'rxjs/operators';
+import { Observable, EMPTY, of, from } from 'rxjs';
 import { TodoListService } from '../todo-list.service';
 
 import * as TodoListActions from './todo-list.actions';
@@ -28,7 +28,9 @@ export class TodoListEffects {
     return this.actions$.pipe(
       ofType(TodoListActions.queryTodoList),
       concatMap(action => {
-        return this
+        const loading$ = of(TodoListActions.todoListLoading());
+        const loaded$ = of(TodoListActions.todoListLoaded());
+        const query$ = this
           .todoListService
           .getTodoList(action.keyword, action.pagination, action.sort)
           .pipe(
@@ -37,7 +39,8 @@ export class TodoListEffects {
               console.error(error);
               return of(TodoListActions.setTodoItems({ totalCount: 0, items: [] }))
             })
-          )
+          );
+        return from([loading$, query$, loaded$]).pipe(concatAll());
       }))
   });
 

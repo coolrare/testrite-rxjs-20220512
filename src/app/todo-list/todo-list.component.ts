@@ -41,7 +41,7 @@ export class TodoListComponent implements OnInit {
   loading = false;
 
   totalCount$ = this.store.select(selectTodoCount);
-  todoList$ = this.store.select(selectTodoItems).pipe(tap(() => this.store.dispatch(todoListLoaded())));
+  todoList$ = this.store.select(selectTodoItems)
   loading$ = this.store.select(selectTodoListLoading)
 
   constructor(
@@ -72,7 +72,6 @@ export class TodoListComponent implements OnInit {
 
   refreshTodoList() {
     // this.loading = true;
-    this.store.dispatch(todoListLoading());
     this.store.dispatch(queryTodoList({ keyword: this.keyword, pagination: this.pagination, sort: this.sort }));
 
     // this.todoListService.getTodoList(
