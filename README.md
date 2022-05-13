@@ -17,7 +17,7 @@
 
 ## NgRx 練習
 
-### 練習1
+### 練習 1
 
 - 安裝 `@ngrx/store, @ngrx/schematics, @ngrx/effects`
 - 建立一個 feature: `ng add feature todos-list/state/todo-list`
@@ -26,3 +26,51 @@
 - 在 todo-list.reducer.ts 內，設定 `State` 型別，並指定 `initialState`
 - 在 todo-list.component.ts 內，注入 `Store`，並取得狀態資訊：`this.store.subscribe(console.log)`
 - 使用預設建立好的 `selectTodoListState` Selector，取得指定 Feature 的內容：`this.store.select(selectTodoListState).subscribe(console.log)`
+
+### 練習 2
+
+- 建立一個工作說明（Action）
+  
+  ```typescript
+  export const setTodoItems = createAction(
+    '[TodoList] Set Todo Items',
+    props<{ totalCount: number, items: TodoItem[] }>()
+  );
+  ```
+  
+- 在 todo-list.component.ts 內分配此工作 （dispatch action）
+
+  ```typescript
+  this.store.dispatch(setTodoItems({ ... }))
+  ```
+  
+- 在 todo-list.reducer.ts 內根據此工作改變狀態
+
+  ```typescript
+  on(TodoListActions.setTodoItems, (state, action) => ({
+    ...state,
+    totalCount: action.totalCount,
+    todoList: action.items
+  }))
+  ```
+  
+- 建立狀態選取器（Selector）
+
+  ```typescript
+  export const selectTodoItems = createSelector(
+    selectTodoListState,
+    (todoState) => todoState.todoList
+  );
+  
+  export const selectTodoCount = createSelector(
+    selectTodoListState,
+    (todoState) => todoState.totalCount
+  );
+  ```
+
+- todo-list.component.ts 內使用這些 Selector 取得實際上的狀態資料
+
+  ```typescript
+  totalCount$ = this.store.select(selectTodoCount);
+  todoList$ = this.store.select(selectTodoItems);
+  ```
