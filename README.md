@@ -114,3 +114,8 @@
   - 變更狀態統一透過 Action -> Reducer
   - 取的狀態統一透過 Selector
   - todo-list.component.ts 下得子元件，也可以改成從 Store 存取資料，不再透過 @Input / @Output
+
+## 其他常見的 Angular 狀態管理套件
+
+- [NGXS](https://www.ngxs.io/)
+- [Akita](https://datorama.github.io/akita/)
