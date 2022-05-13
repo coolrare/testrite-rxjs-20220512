@@ -38,13 +38,13 @@
   );
   ```
   
-- 在 todo-list.component.ts 內分配此工作 （dispatch action）
+- 在 `todo-list.component.ts` 內分配此工作 （dispatch action）
 
   ```typescript
   this.store.dispatch(setTodoItems({ ... }))
   ```
   
-- 在 todo-list.reducer.ts 內根據此工作改變狀態
+- 在 `todo-list.reducer.ts` 內根據此工作改變狀態
 
   ```typescript
   on(TodoListActions.setTodoItems, (state, action) => ({
@@ -68,7 +68,7 @@
   );
   ```
 
-- todo-list.component.ts 內使用這些 Selector 取得實際上的狀態資料
+- `todo-list.component.ts` 內使用這些 Selector 取得實際上的狀態資料
 
   ```typescript
   totalCount$ = this.store.select(selectTodoCount);
